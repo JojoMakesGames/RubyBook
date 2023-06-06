@@ -10,7 +10,21 @@ services:
     image: postgres:latest
     ports:
       - "5432:5432"
+    environment:
+      POSTGRES_USER: demo
+      POSTGRES_DB: demo_development
+      POSTGRES_PASSWORD: pass
     volumes:
       - ./db:/var/lib/postgresql/data
   web:
-    build: .
+    build: demo/Dockerfile
+    command: "bundle exec rails s -p 3000 -b '0.0.0.0'"
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: db
+      DB_NAME: postgres
+      DB_USERNAME: demo 
+    depends_on:
+      - db
+      - redis
